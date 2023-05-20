@@ -11,11 +11,5 @@ pool = mysql
   })
   .promise();
 
-// Function example
-
-async function getPointsinterets() {
-  const [rows] = await pool.execute("SELECT * FROM PointsInterets");
-  return rows;
-}
 
 module.exports = pool;
