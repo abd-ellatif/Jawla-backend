@@ -69,4 +69,5 @@ module.exports = {
   showtables,
   AjouterCommentaire,
   AfficherQuiz,
+  AfficherDetailsPI,
 };

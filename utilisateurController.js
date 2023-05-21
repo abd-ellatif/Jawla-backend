@@ -40,6 +40,16 @@ utilisateurController.get("/AfficherQuiz/:idPI", async (req, res) => {
 });
 
 
+utilisateurController.get("/AfficherDetailsPI/:idPI", async (req, res) => {
+  try {
+    const result = await utilisateurService.AfficherDetailsPI(req.params.idPI);
+    res.status(200).send(result);
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+});
+
+
 
 
 
