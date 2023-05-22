@@ -1,5 +1,6 @@
 const express = require("express");
 const utilisateurController = require("./utilisateurController.js");
+const responsableController = require("./responsableController.js");
 
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -13,6 +14,7 @@ app.get("/", function (req, res) {
 });
 
 app.use("/utilisateur", utilisateurController);
+app.use("/responsable", responsableController);
 
 app.listen(3000, () => {
   console.log("Server started on port 3000");

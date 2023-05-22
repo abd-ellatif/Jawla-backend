@@ -41,6 +41,7 @@ async function AfficherQuiz(idPI) {
 }
 
 //Theme,Categorie,Evenements,Offres,horaires,arretsTransport,responsable,commentaires
+// Ajouter photos
 async function AfficherDetailsPI(idPI) {
   const connection = await pool.getConnection();
   try {
@@ -77,7 +78,7 @@ async function AfficherDetailsPI(idPI) {
       [idPI]
     );
     const [commentaires] = await connection.query(
-      `select nom,prenom,nombreEtoile,texte from utilisateur a JOIN (select * from commentaire where idPointInteret = ?) b 
+      `select idCommentaire,nom,prenom,nombreEtoile,texte from utilisateur a JOIN (select * from commentaire where idPointInteret = ?) b 
     ON a.idUtilisateur = b.idUtilisateur`,
       [idPI]
     );
