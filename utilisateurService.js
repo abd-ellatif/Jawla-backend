@@ -109,10 +109,37 @@ async function getCoordoones() {
   }
 }
 
+async function AjouterAuFavoris(idUtilisateur, idPI) {
+  const connection = await pool.getConnection();
+  try {
+    await connection.query(`insert into Favoriser values (?,?);`, [
+      idUtilisateur,
+      idPI,
+    ]);
+  } finally {
+    connection.release();
+  }
+}
+
+async function AfficherFavoris(idUtilisateur) {
+  const connection = await pool.getConnection();
+  try {
+    const [favoris] = await connection.query(
+      `select idPointinteret,titre from pointInteret p Natural JOIN (select * from favoriser where idUtilisateur = ?) as f`,
+      [idUtilisateur]
+    );
+    return favoris;
+  } finally {
+    connection.release();
+  }
+}
+
 module.exports = {
   showtables,
   AjouterCommentaire,
   AfficherQuiz,
   AfficherDetailsPI,
   getCoordoones,
+  AjouterAuFavoris,
+  AfficherFavoris,
 };

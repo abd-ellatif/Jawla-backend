@@ -59,6 +59,30 @@ utilisateurController.get("/getCoordoones", async (req, res) => {
 });
 
 
+utilisateurController.post(
+  "/AjouterAuFavoris/:idUser/:idPI",
+  async (req, res) => {
+    try {
+      const result = await utilisateurService.AjouterAuFavoris(
+        req.params.idUser,
+        req.params.idPI
+      );
+      res.status(200);
+    } catch (e) {
+      res.status(500).send(e.message);
+    }
+  }
+);
+
+utilisateurController.get("/AfficherFavoris/:idUser", async (req, res) => {
+  try {
+    const result = await utilisateurService.AfficherFavoris(req.params.idUser);
+    res.status(200).send(result);
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+}); 
+
 
 
 
