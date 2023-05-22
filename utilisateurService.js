@@ -15,7 +15,7 @@ async function AjouterCommentaire(iduser, idPI, commentaire, nombreEtoile) {
   try {
     await connection.query(
       `insert into Commentaire (nombreEtoile,texte,idUtilisateur,idPointInteret)
-        values (?,?,?,?,?);`,
+        values (?,?,?,?);`,
       [nombreEtoile, commentaire, iduser, idPI]
     );
   } finally {
@@ -32,7 +32,7 @@ async function AfficherQuiz(idPI) {
     );
     const [Questions] = await connection.query(
       "select * from Question where idQuiz = ?;",
-      [quiz.idQuiz]
+      [quiz[0].idQuiz]
     );
     return { quiz, Questions };
   } finally {
@@ -40,34 +40,79 @@ async function AfficherQuiz(idPI) {
   }
 }
 
-//Theme,Categorie,Evenements,Offres,horaires,arretsTransport,responsable
-async function  AfficherDetailsPI(idPI) {
+//Theme,Categorie,Evenements,Offres,horaires,arretsTransport,responsable,commentaires
+async function AfficherDetailsPI(idPI) {
   const connection = await pool.getConnection();
   try {
-    const [themes] = await connection.query(`Select designation from theme a JOIN (select idTheme from Estdetheme 
-      E where E.idPointInteret = ${idPI}) b ON  a.idTheme = b.idTheme;`);
-    const [categories] = await connection.query(`Select designation from categorie a JOIN (select idCategorie from EstDecategorie 
-      E where E.idPointInteret = ${idPI}) b ON  a.idCategorie = b.idCategorie;`);
-    const [evenements] = await connection.query(`select * from evenement where idPointInteret = ${idPI};`);
-    const [offres] = await connection.query(`select * from offre where idPointInteret = ${idPI};`);
-    const [horaires] = await connection.query(`select * from ouvrir where idPointInteret = ${idPI};`);
-    const [arretsTransport] = await connection.query(`select * from arretTransport where idPointInteret = ${idPI};`);
-    const [responsable] = await connection.query(`select nom,prenom,email,numeroDeTel from responsable R JOIN 
-    (select idResponsable from PointInteret a WHERE a.idPointInteret = ${idPI}) b
-    ON b.idResponsable = R.idResponsable;`);
+    const [themes] = await connection.query(
+      `Select designation from theme a JOIN (select idTheme from Estdetheme 
+      E where E.idPointInteret = ?) b ON  a.idTheme = b.idTheme;`,
+      [idPI]
+    );
+    const [categories] = await connection.query(
+      `Select designation from categorie a JOIN (select idCategorie from EstDecategorie 
+      E where E.idPointInteret = ?) b ON  a.idCategorie = b.idCategorie;`,
+      [idPI]
+    );
+    const [evenements] = await connection.query(
+      `select * from evenement where idPointInteret = ?;`,
+      [idPI]
+    );
+    const [offres] = await connection.query(
+      `select * from offre where idPointInteret = ?;`,
+      [idPI]
+    );
+    const [horaires] = await connection.query(
+      `select * from ouvrir where idPointInteret = ?;`,
+      [idPI]
+    );
+    const [arretsTransport] = await connection.query(
+      `select * from arretTransport where idPointInteret = ?;`,
+      [idPI]
+    );
+    const [responsable] = await connection.query(
+      `select nom,prenom,email,numeroDeTel from responsable R JOIN 
+    (select idResponsable from PointInteret a WHERE a.idPointInteret = ?) b
+    ON b.idResponsable = R.idResponsable;`,
+      [idPI]
+    );
+    const [commentaires] = await connection.query(
+      `select nom,prenom,nombreEtoile,texte from utilisateur a JOIN (select * from commentaire where idPointInteret = ?) b 
+    ON a.idUtilisateur = b.idUtilisateur`,
+      [idPI]
+    );
 
-    return { themes, categories, evenements, offres, horaires, arretsTransport, responsable };
+    return {
+      themes,
+      categories,
+      evenements,
+      offres,
+      horaires,
+      arretsTransport,
+      commentaires,
+      responsable,
+    };
   } finally {
     connection.release();
   }
-
 }
 
-
+async function getCoordoones() {
+  const connection = await pool.getConnection();
+  try {
+    const [points] = await connection.query(
+      "select idPointInteret,latitude,longitude from pointInteret natural join (select * from coordoones) as c"
+    );
+    return points;
+  } finally {
+    connection.release();
+  }
+}
 
 module.exports = {
   showtables,
   AjouterCommentaire,
   AfficherQuiz,
   AfficherDetailsPI,
+  getCoordoones,
 };

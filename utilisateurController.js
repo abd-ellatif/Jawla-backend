@@ -49,6 +49,15 @@ utilisateurController.get("/AfficherDetailsPI/:idPI", async (req, res) => {
   }
 });
 
+utilisateurController.get("/getCoordoones", async (req, res) => {
+  try {
+    const result = await utilisateurService.getCoordoones();
+    res.status(200).send(result);
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+});
+
 
 
 
