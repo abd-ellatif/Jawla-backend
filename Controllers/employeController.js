@@ -17,6 +17,7 @@ employeController.post("/AccepterDemande/:idPI", async (req, res) => {
     const result = await employeService.AccepterDemande(req.params.idPI);
     res.status(200);
   } catch (e) {
+    console.log(e);
     res.status(500).send(e.message);
   }
 });
