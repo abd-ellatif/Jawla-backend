@@ -1,4 +1,4 @@
-pool = require("./database.js");
+pool = require("../database.js");
 
 async function showtables() {
   const connection = await pool.getConnection();

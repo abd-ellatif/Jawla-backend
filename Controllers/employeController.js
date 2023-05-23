@@ -1,5 +1,5 @@
 express = require("express");
-const employeService = require("./employeService.js");
+const employeService = require("../Services/employeService.js");
 
 const employeController = express.Router();
 

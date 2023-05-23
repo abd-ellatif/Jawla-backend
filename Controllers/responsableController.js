@@ -1,7 +1,8 @@
 express = require("express");
-const responsableService = require("./responsableService.js");
+const responsableService = require("../Services/responsableService");
 
 const responsableController = express.Router();
+
 
 responsableController.post("/ajouterLieu/:idResponsable", async (req, res) => {
   try {
@@ -12,8 +13,7 @@ responsableController.post("/ajouterLieu/:idResponsable", async (req, res) => {
       req.body.themes,
       req.body.categories,
       req.body.horaires,
-      req.body.arretsTransport
-    );
+      req.body.arretsTransport);
     res.status(200).send(result);
   } catch (e) {
     res.status(500).send(e.message);
@@ -32,10 +32,7 @@ responsableController.post("/ModifierLieu/:idPI", async (req, res) => {
 
 responsableController.post("/AjouterQuiz/:idPI", async (req, res) => {
   try {
-    const result = await responsableService.AjouterQuiz(
-      req.params.idPI,
-      req.body.quiz
-    );
+    const result = await responsableService.AjouterQuiz(req.params.idPI,req.body.quiz);
     res.status(200).send(result);
   } catch (e) {
     res.status(500).send(e.message);

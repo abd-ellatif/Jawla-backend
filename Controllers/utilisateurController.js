@@ -1,5 +1,5 @@
 express = require("express");
-const utilisateurService = require("./utilisateurService.js");
+const utilisateurService = require("../Services/utilisateurService");
 
 const utilisateurController = express.Router();
 
@@ -82,14 +82,6 @@ utilisateurController.get("/AfficherFavoris/:idUser", async (req, res) => {
     res.status(500).send(e.message);
   }
 }); 
-
-
-
-
-
-
-
-
 
 
 //Afficher details Pi by idPI
