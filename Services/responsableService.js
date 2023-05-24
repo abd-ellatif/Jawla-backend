@@ -40,6 +40,11 @@ async function AjouterLieu(
       lieu.longitude,
     ]);
 
+    await connection.query(
+      `insert into statistiques(nbrVisites,nbrQuizsPris,idPointInteret) values (?,?,?)`,
+      [0, 0, idPI]
+    );
+
     for (var theme of themes) {
       await connection.query(`insert into estDeTheme values (?,?)`, [
         idPI,
@@ -160,6 +165,32 @@ async function AjouterOffre(idPI, offre) {
     connection.release();
   }
 }
+async function AfficherStatistiques(idPI) {
+  const connection = await pool.getConnection();
+  try {
+    var [statistiques] = await connection.query(
+      `select nbrVisites,nbrQuizsPris from statistiques where idPointInteret = ?`,
+      [idPI]
+    );
+    var [nbrCommentaires] = await connection.query(
+      `select count(*) from commentaire where idPointInteret = ?`,
+      [idPI]
+    );
+    var [nbrFavoris] = await connection.query(
+      `select count(*) from favoris where idPointInteret = ?`,
+      [idPI]
+    );
+    var [avgRatings] = await connection.query(
+      `select avg(nbrEtoile) from commentaire where idPointInteret = ?`,
+      [idPI]
+    );
+    return { statistiques, nbrCommentaires, nbrFavoris, avgRatings };
+  } catch (err) {
+    console.log(err);
+  } finally {
+    connection.release();
+  }
+}
 
 module.exports = {
   AjouterLieu,
@@ -168,4 +199,5 @@ module.exports = {
   AjouterQuiz,
   AjouterEvenement,
   AjouterOffre,
+  AfficherStatistiques,
 };

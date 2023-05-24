@@ -86,4 +86,20 @@ responsableController.post("/AjouterOffre/:idPI", async (req, res, next) => {
   }
 });
 
+responsableController.get(
+  "/AfficherStatistiques/:idPI",
+  async (req, res, next) => {
+    try {
+      const result = await responsableService.AfficherStatistiques(
+        req.params.idPI
+      );
+      res.status(200).send(result);
+      next();
+    } catch (e) {
+      console.error(e);
+      res.status(500).send(e.message);
+    }
+  }
+);
+
 module.exports = responsableController;

@@ -24,4 +24,16 @@ employeController.post("/AccepterDemande/:idPI", async (req, res, next) => {
   }
 });
 
+employeController.get("/AfficherStatsGlobales", async (req, res, next) => {
+  try {
+    const result = await employeService.AfficherStatsGlobales();
+    res.status(200).send(result);
+    next();
+  } catch (e) {
+    console.error(e);
+    res.status(500).send(e.message);
+  }
+});
+
+
 module.exports = employeController;

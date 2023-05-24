@@ -6,7 +6,7 @@ const utilisateurController = express.Router();
 utilisateurController.get("/showtables", async (req, res, next) => {
   try {
     const result = await utilisateurService.showtables();
-    res.status(200).send(result[0]);
+    res.status(200).send(result);
     next();
   } catch (e) {
     res.status(500).send(e.message);
@@ -96,6 +96,22 @@ utilisateurController.get(
     }
   }
 ); 
+
+utilisateurController.post(
+  "/IncrementerNombreVisite/:idPI",
+  async (req, res, next) => {
+    try {
+      const result = await utilisateurService.IncrementerNbrVisites(
+        req.params.idPI
+      );
+      res.status(200).send("Incrémenté avec succés");
+      next();
+    } catch (e) {
+      res.status(500).send(e.message);
+    }
+  }
+); 
+
 
 
 //Afficher details Pi by idPI

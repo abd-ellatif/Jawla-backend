@@ -28,7 +28,23 @@ async function AccepterDemande(idPI) {
   }
 }
 
+async function AfficherStatsGlobales(){
+  const connection = await pool.getConnection();
+  try {
+    const [[nbrVisites]] = await connection.query('select sum(nbrVisites) from statistiques');
+    const [[nbrLieux]] = await connection.query('select count(*) from PointInteret')
+    const [[nbrEvenements]] = await connection.query('select count(*) from evenment')
+    return {nbrVisites,nbrLieux,nbrEvenements}
+
+  }catch(e) {
+    throw e;
+  } finally {
+    connection.release()
+  }
+}
+
 module.exports = {
   AfficherDemandes,
   AccepterDemande,
+  AfficherStatsGlobales
 };
