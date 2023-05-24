@@ -14,8 +14,8 @@ employeController.get("/AfficherDemandes", async (req, res) => {
 
 employeController.post("/AccepterDemande/:idPI", async (req, res) => {
   try {
-    const result = await employeService.AccepterDemande(req.params.idPI);
-    res.status(200);
+    await employeService.AccepterDemande(req.params.idPI);
+    res.status(200).send("Demande acceptée avec succés");
   } catch (e) {
     console.log(e);
     res.status(500).send(e.message);

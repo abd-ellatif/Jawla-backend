@@ -6,7 +6,6 @@ const utilisateurController = express.Router();
 utilisateurController.get("/showtables", async (req, res) => {
   try {
     const result = await utilisateurService.showtables();
-    console.log(result[0]);
     res.status(200).send(result[0]);
   } catch (e) {
     res.status(500).send(e.message);
@@ -23,7 +22,7 @@ utilisateurController.post(
         req.body.commentaire,
         req.body.nombreEtoile
       );
-      res.status(200);
+      res.status(200).send('Commentaire ajouté avec succés');
     } catch (e) {
       res.status(500).send(e.message);
     }
@@ -67,7 +66,7 @@ utilisateurController.post(
         req.params.idUser,
         req.params.idPI
       );
-      res.status(200);
+      res.status(200).send('Ajouté avec succés');
     } catch (e) {
       res.status(500).send(e.message);
     }
