@@ -16,7 +16,7 @@ app.get("/", function (req, res) {
 
 app.use("/utilisateur", utilisateurController);
 app.use("/responsable", responsableController);
-//app.use("/lieu",pointInteretController);
+app.use("/lieu",pointInteretController);
 
 app.listen(3000, () => {
   console.log("Server started on port 3000");
