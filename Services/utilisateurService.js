@@ -3,7 +3,7 @@ pool = require("../database.js");
 async function showtables() {
   const connection = await pool.getConnection();
   try {
-    const users = await connection.query("show tables");
+    const [users] = await connection.query("show tables");
     return users;
   } finally {
     connection.release();
@@ -135,6 +135,18 @@ async function AfficherFavoris(idUtilisateur) {
   }
 }
 
+async function IncrementerNbrVisites(idPI) {
+  const connection = await pool.getConnection();
+  try {
+    await connection.query(
+      `update stqtistiques set nbrVisites = nbrVisites + 1 where idPointInteret = ?`,
+      [idPI]
+    );
+  } finally {
+    connection.release();
+  }
+}
+
 module.exports = {
   showtables,
   AjouterCommentaire,
@@ -143,4 +155,5 @@ module.exports = {
   getCoordoones,
   AjouterAuFavoris,
   AfficherFavoris,
+  IncrementerNbrVisites,
 };
