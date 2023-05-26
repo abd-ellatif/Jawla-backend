@@ -1,68 +1,78 @@
 pool = require("../database.js");
 
-  async function Rechercher(term, category, theme, etatOuverture) {
+async function Rechercher(term, category, theme, etatOuverture) {
     const connection = await pool.getConnection();
     try {
-        let query = `
-          SELECT *
-          FROM PointInteret
-          WHERE titre LIKE '%${term}%'
+      console.log("2", term, category, theme, etatOuverture);
+      let query = `
+        SELECT *
+        FROM pointinteret
+        WHERE titre LIKE '%${term}%'
+      `;
+  
+      if (category) {
+        query += `
+          AND idPointInteret IN (
+            SELECT idPointInteret
+            FROM EstdeCategorie
+            WHERE idCategorie = (
+              SELECT idCategorie
+              FROM Categorie 
+              WHERE designation = '${category}'
+            )
+          )
         `;
-    
-        if (category) {
-          query += `
-            AND idPointInteret IN (
-              SELECT idPointInteret
-              FROM EstdeCategorie
-              WHERE idCategorie = (
-                SELECT idCategorie
-                FROM Categorie
-                WHERE designation = '${category}'
-              )
-            )
-          `;
-        }
-    
-        if (theme) {
-          query += `
-            AND idPointInteret IN (
-              SELECT idPointInteret
-              FROM EstdeTheme
-              WHERE idTheme = (
-                SELECT idTheme
-                FROM Theme
-                WHERE designation = '${theme}'
-              )
-            )
-          `;
-        }
-        if (etatOuverture) {
-          query += `
-            AND idPointInteret IN (
-              SELECT idPointInteret
-              FROM ouvrir
-              WHERE heureOuverture >= CURRENT_TIME and heurefin < CURRENT_TIME
-            )
-          `;
-        }
-    
-        connection.query(query, (err, results) => {
-          if (err) {
-            console.error('Error executing query:', err);
-            res.status(500).json({ error: 'An error occurred' });
-            return;
-          }
-    
-          return res.json(results);
-        });
-      } catch (err) {
-        console.error('Error connecting to MySQL:', err);
-        res.status(500).json({ error: 'An error occurred' });
       }
+  
+      if (theme) {
+        query += `
+          AND idPointInteret IN (
+            SELECT idPointInteret
+            FROM EstdeTheme
+            WHERE idTheme = (
+              SELECT idTheme
+              FROM Theme
+              WHERE designation = '${theme}'
+            )
+          )
+        `;
+      }
+      if (etatOuverture) {
+        query += `
+          AND idPointInteret IN (
+            SELECT idPointInteret
+            FROM ouvrir
+            WHERE heureOuverture >= CURRENT_TIME and heurefin < CURRENT_TIME
+          )
+        `;
+      }
+      const [results] = await connection.execute(query);
+      return results;
+    } catch (err) {
+      console.error('Error connecting to MySQL:', err);
+    } finally {
+      connection.release(); // Libérer la connexion à la base de données
+    }
   }
+  
   /**
    const connection = await pool.getConnection(); // Assuming getConnection() returns a valid MySQL connection
-   
    */
 
-   module.exports = {Rechercher}
+   async function Supprimer(id) {
+       const connection = await pool.getConnection()
+    try {
+       var query=`delete from pointinteret where idPointInteret ='${id}'`
+       const [results] = await connection.execute(query);
+       return results;
+   }
+   catch (err) {
+    console.error('Error connecting to MySQL:', err);
+  } finally {
+    connection.release(); // Libérer la connexion à la base de données
+  }
+}
+
+
+
+   module.exports = {Rechercher,Supprimer}

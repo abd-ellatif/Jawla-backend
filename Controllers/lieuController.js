@@ -17,9 +17,9 @@ connection.query(query,[product.idWilaya,product.nom],(err,results)=>{
     }
 })
 })
-
-router.get('/AfficherLieu',(req,res,next)=>{
-    var query = "select * from produt";
+*/
+/*
+router.get('/AfficherLieu/:id',(req,res)=>{
     connection.query(query,(err,results)=>{
         if(!err){
             return res.status(200).json(results);
@@ -28,8 +28,9 @@ router.get('/AfficherLieu',(req,res,next)=>{
         }
     })
 })
-
-//Pour modifier il faut verifier si celui qui modifie est le vrai respo
+*/
+/*
+//Pour modifier il faut verifier si celui qui modifie est le respo
 router.patch('/ModifierLieu/:id',(req,res,next)=>{
     const id = req.params.id;
     let product = req.body;
@@ -45,32 +46,30 @@ router.patch('/ModifierLieu/:id',(req,res,next)=>{
         }
     })
 })
-
-router.delete('/SupprimerLieu/:id',(req,res,next)=>{
-    const id = req.params.id;
-    var query="delete form product where id =?"
-    connection.query(query,[id],(err,results)=>{
-        if(!err){
-            if(results.affectedRows==0){
-                return res.status(404).json({message:"Product id is not found "})
-            }
-            return res.status(200).json({message:"Product deleted successfully"})
-        }else{
-            return res.status(500).json(err);
-        }
-    })
-})
 */
-router.get("/RechercheLieu", async (req, res) => {
+router.delete('/SupprimerLieu/:id',async (req,res,next)=>{
+    const id = req.params.id;
     try {
+        const result = await lieuService.Supprimer(id);
+        res.status(200).send(result);
+      } catch (e) {
+        res.status(500).send(e.message);
+      }
+})
+
+
+router.get("/RechercheLieu", async (req, res) => {
     const { term, category, theme, etatOuverture } = req.query;
-      const result = await lieuService.Recherche(term,category,theme,etatOuverture);
+    try {
+        console.log("1",term,category,theme,etatOuverture);
+      const result = await lieuService.Rechercher(term,category,theme,etatOuverture,res);
+      res.status(200).json({message:"Succes"})
       res.status(200).send(result);
     } catch (e) {
       res.status(500).send(e.message);
     }
   });
-//URL  = http://localhost:3000/RechercherLieu?term=hadja&category=hadja&theme=hadja&heureOuverture=hadja&heureFin=hadja
+//URL  = http://localhost:3000/lieu/RechercheLieu?term=hadja&category=hadja&theme=hadja&heureOuverture=hadja&heureFin=hadja
 
 
 
