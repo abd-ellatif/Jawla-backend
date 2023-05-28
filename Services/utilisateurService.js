@@ -14,7 +14,7 @@ async function AjouterCommentaire(iduser, idPI, commentaire, nombreEtoile) {
   const connection = await pool.getConnection();
   try {
     await connection.query(
-      `insert into Commentaire (nombreEtoile,texte,idUtilisateur,idPointInteret)
+      `insert into commentaire (nombreEtoile,texte,idUtilisateur,idPointInteret)
         values (?,?,?,?);`,
       [nombreEtoile, commentaire, iduser, idPI]
     );
@@ -27,11 +27,11 @@ async function AfficherQuiz(idPI) {
   const connection = await pool.getConnection();
   try {
     const [quiz] = await connection.query(
-      `select * from Quiz where idPointInteret = ?;`,
+      `select * from quiz where idPointInteret = ?;`,
       [idPI]
     );
     const [Questions] = await connection.query(
-      "select * from Question where idQuiz = ?;",
+      "select * from question where idQuiz = ?;",
       [quiz[0].idQuiz]
     );
     return { quiz, Questions };
@@ -46,12 +46,12 @@ async function AfficherDetailsPI(idPI) {
   const connection = await pool.getConnection();
   try {
     const [themes] = await connection.query(
-      `Select designation from theme a JOIN (select idTheme from Estdetheme 
+      `Select designation from theme a JOIN (select idTheme from estdetheme 
       E where E.idPointInteret = ?) b ON  a.idTheme = b.idTheme;`,
       [idPI]
     );
     const [categories] = await connection.query(
-      `Select designation from categorie a JOIN (select idCategorie from EstDecategorie 
+      `Select designation from categorie a JOIN (select idCategorie from estdecategorie 
       E where E.idPointInteret = ?) b ON  a.idCategorie = b.idCategorie;`,
       [idPI]
     );
@@ -68,11 +68,11 @@ async function AfficherDetailsPI(idPI) {
       [idPI]
     );
     const [arretsTransport] = await connection.query(
-      `select * from arretTransport where idPointInteret = ?;`,
+      `select * from arrettransport where idPointInteret = ?;`,
       [idPI]
     );
     const [responsable] = await connection.query(
-      `select nom,prenom,email,numeroDeTel from responsable R JOIN 
+      `select nom,prenom,email,numerodetel from responsable R JOIN 
     (select idResponsable from PointInteret a WHERE a.idPointInteret = ?) b
     ON b.idResponsable = R.idResponsable;`,
       [idPI]

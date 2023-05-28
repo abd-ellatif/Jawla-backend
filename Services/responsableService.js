@@ -16,7 +16,7 @@ async function AjouterLieu(
   const connection = await pool.getConnection();
   try {
     await connection.query(
-      `insert into PointInteret 
+      `insert into pointinteret 
           (titre,description,Adresse,valide,latitude,longitude,idResponsable)
            values (?,?,?,0,?,?,?);`,
       [
@@ -31,7 +31,7 @@ async function AjouterLieu(
     );
 
     var idPI = await connection.query(
-      `select last_insert_id(idPointInteret) from pointInteret order by LAST_INSERT_ID(idPointinteret) desc limit 1;`
+      `select last_insert_id(idPointInteret) from pointinteret order by LAST_INSERT_ID(idPointinteret) desc limit 1;`
     );
     idPI = idPI[0][0]["last_insert_id(idPointInteret)"]; // id du point d'interet ajouté
 
@@ -46,7 +46,7 @@ async function AjouterLieu(
     );
 
     for (var theme of themes) {
-      await connection.query(`insert into estDeTheme values (?,?)`, [
+      await connection.query(`insert into estdetheme values (?,?)`, [
         idPI,
         theme,
       ]);

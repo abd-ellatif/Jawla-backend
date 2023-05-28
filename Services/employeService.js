@@ -4,7 +4,7 @@ async function AfficherDemandes() {
   const connection = await pool.getConnection();
   try {
     const [result] = await connection.query(
-      `select * from PointInteret where valide=0`
+      `select * from pointinteret where valide=0`
     );
     return result;
   } catch (e) {
@@ -18,7 +18,7 @@ async function AccepterDemande(idPI) {
   const connection = await pool.getConnection();
   try {
     await connection.query(
-      `update PointInteret set valide=1 where idPointInteret=?`,
+      `update pointinteret set valide=1 where idPointInteret=?`,
       [idPI]
     );
   } catch (e) {
@@ -28,18 +28,23 @@ async function AccepterDemande(idPI) {
   }
 }
 
-async function AfficherStatsGlobales(){
+async function AfficherStatsGlobales() {
   const connection = await pool.getConnection();
   try {
-    const [[nbrVisites]] = await connection.query('select sum(nbrVisites) from statistiques');
-    const [[nbrLieux]] = await connection.query('select count(*) from PointInteret')
-    const [[nbrEvenements]] = await connection.query('select count(*) from evenment')
-    return {nbrVisites,nbrLieux,nbrEvenements}
-
-  }catch(e) {
+    const [[nbrVisites]] = await connection.query(
+      "select sum(nbrVisites) from statistiques"
+    );
+    const [[nbrLieux]] = await connection.query(
+      "select count(*) from pointinteret"
+    );
+    const [[nbrEvenements]] = await connection.query(
+      "select count(*) from evenment"
+    );
+    return { nbrVisites, nbrLieux, nbrEvenements };
+  } catch (e) {
     throw e;
   } finally {
-    connection.release()
+    connection.release();
   }
 }
 
