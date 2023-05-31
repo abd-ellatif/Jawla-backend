@@ -19,13 +19,16 @@ router.get("/RechercheLieu", async (req, res) => {
     try {
         console.log("1",term,category,theme,etatOuverture);
       const result = await lieuService.Rechercher(term,category,theme,etatOuverture,res);
-      res.status(200).json({message:"Succes"})
-      res.status(200).send(result);
+      //console.log(result)
+      //res.status(200).json({message:"Succes"})
+      res.status(200).json(result);
     } catch (e) {
       res.status(500).send(e.message);
     }
   });
-//URL  = http://localhost:3000/lieu/RechercheLieu?term=hadja&category=hadja&theme=hadja&heureOuverture=hadja&heureFin=hadja
+  module.exports = router;
+  
+  //URL  = http://localhost:3000/lieu/RechercheLieu?term=cruz%20Alger&category=Monument historique
 //   let query = `
 //   SELECT * 
 //   FROM (SELECT *
@@ -52,7 +55,6 @@ router.get("/RechercheLieu", async (req, res) => {
 //   `;
 
 
-module.exports = router;
 /*
 router.post('/AjouterLieu',(req,res,next)=> {
     

@@ -1,23 +1,42 @@
 pool = require("../database.js");
 
-async function Rechercher(term, category, theme, etatOuverture) {
+
+
+
+async function Rechercher(term, category, theme,etatOuverture){
     const connection = await pool.getConnection();
     try {
-      console.log("2", term, category, theme, etatOuverture);
+      console.log("2","'",term,"'", category, theme, etatOuverture);
+      if (!term && !category && !theme && !etatOuverture){
+        return [];
+      }
+
       let query = `
         SELECT *
         FROM pointinteret
-        WHERE titre LIKE '%${term}%'
+        WHERE 1=1
       `;
-  
+
+      if (term) {
+        const keywords = term.split(' ');
+      query += ' AND (';
+      keywords.forEach((keyword, index) => {
+        if (index !== 0) {
+          query += ' AND';
+        }
+        query += ` (titre LIKE '%${keyword}%' OR Adresse LIKE '%${keyword}%')`;
+      });
+      query += ')';
+      }
+
       if (category) {
         query += `
           AND idPointInteret IN (
             SELECT idPointInteret
-            FROM EstdeCategorie
+            FROM estdecategorie
             WHERE idCategorie = (
               SELECT idCategorie
-              FROM Categorie 
+              FROM categorie 
               WHERE designation = '${category}'
             )
           )
@@ -28,24 +47,28 @@ async function Rechercher(term, category, theme, etatOuverture) {
         query += `
           AND idPointInteret IN (
             SELECT idPointInteret
-            FROM EstdeTheme
+            FROM estdetheme
             WHERE idTheme = (
               SELECT idTheme
-              FROM Theme
+              FROM theme
               WHERE designation = '${theme}'
             )
           )
         `;
       }
       if (etatOuverture) {
+        const currentDate = new Date();
+        const options = { weekday: 'long' };
+        const currentDayName = currentDate.toLocaleDateString('fr-FR', options);
         query += `
           AND idPointInteret IN (
             SELECT idPointInteret
             FROM ouvrir
-            WHERE heureOuverture >= CURRENT_TIME and heurefin < CURRENT_TIME
+            WHERE jour= '${currentDayName}' AND heureOuverture <= CURRENT_TIME AND heurefin > CURRENT_TIME
           )
         `;
       }
+      console.log(query);
       const [results] = await connection.execute(query);
       return results;
     } catch (err) {
@@ -72,7 +95,6 @@ async function Rechercher(term, category, theme, etatOuverture) {
     connection.release(); // Libérer la connexion à la base de données
   }
 }
-
 
 
    module.exports = {Rechercher,Supprimer}
