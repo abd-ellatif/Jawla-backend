@@ -3,6 +3,90 @@ const utilisateurService = require("../Services/utilisateurService");
 
 const utilisateurController = express.Router();
 
+
+
+
+
+
+
+// *********** Sign Up User ****************
+const signUpUtilisateur = (req, res) => {
+  const utilisateur = req.body;
+
+  utilisateurService.createutilisateur(utilisateur, (error, utilisateurId) => {
+    if (error) {
+      console.error('Error creating utilisateur:', error);
+      res.status(500).send(error);
+      return;
+    }
+
+    res.json({ utilisateurId });
+  });
+};
+
+utilisateurController.post("/signUpUtilisateur", signUpUtilisateur);
+
+
+// *********** Log In User ****************   
+const loginUtilisateur = (req, res) => {
+  const { email, password } = req.body;
+
+  utilisateurService.loginUser(email, password, (error, Utilisateur) => {
+    if (error) {
+      console.error('Error LogIn:', error);
+      res.status(500).send(error);
+      return;
+    }
+
+      res.json({ 'idUtilisateur:':  Utilisateur });
+  });
+};
+
+
+utilisateurController.post("/loginutilisateur", signUpUtilisateur);
+
+
+// ******* Google Log In **********
+const GoogleLogin = (req, res) => {
+
+  const {nom, prenom , email } = req.body;
+
+  utilisateurService.authGoogle(nom, prenom,email, (error, message) => {
+    if (error) {
+      console.error('Erreur lors de l\'authentification de l\'utilisateur:', error);
+      res.status(500).json({ error: 'Erreur du serveur' });
+      return;
+    }
+
+    res.json({ message });
+  });
+};
+
+
+utilisateurController.post("/GoogleLogin", GoogleLogin);
+
+
+// ******* Mot de passe oublié **********
+const mod_motDePasse = (req, res) => {
+  
+  const { email, nouv_password } = req.body;
+
+  utilisateurService.motDePasse_oublie(email, nouv_password, (error, message) => {
+    if (error) {
+      console.error('Erreur lors de la réinitialisation du mot de passe :', error);
+      res.status(400).json({ message: error });
+      return;
+    }
+
+    res.json({ message });
+  });
+};
+
+
+utilisateurController.post("/mod_motDePasse", mod_motDePasse);
+
+
+
 utilisateurController.get("/showtables", async (req, res, next) => {
   try {
     const result = await utilisateurService.showtables();
