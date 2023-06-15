@@ -1,7 +1,7 @@
 const express = require("express");
 const utilisateurController = require("./Controllers/utilisateurController");
 const responsableController = require("./Controllers/responsableController");
-const pointInteretController = require("./Controllers/lieuController");
+const lieuController = require("./Controllers/lieuController");
 const employeController = require("./Controllers/employeController");
 const pool = require("./database.js");
 
@@ -19,7 +19,7 @@ app.get("/", function (req, res) {
 app.use("/utilisateur", utilisateurController);
 app.use("/responsable", responsableController);
 app.use("/employe", employeController);
-//app.use("/lieu",pointInteretController);
+app.use("/lieu",lieuController);
 
 app.listen(3000, () => {
   console.log("Server started on port 3000");

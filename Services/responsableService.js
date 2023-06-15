@@ -217,7 +217,6 @@ async function AjouterLieu(
         idResponsable,
       ]
     );
-
     var idPI = await connection.query(
       `select last_insert_id(idPointInteret) from pointinteret order by LAST_INSERT_ID(idPointinteret) desc limit 1;`
     );
@@ -232,7 +231,6 @@ async function AjouterLieu(
       `insert into statistiques(nbrVisites,nbrQuizsPris,idPointInteret) values (?,?,?)`,
       [0, 0, idPI]
     );
-
     for (var theme of themes) {
       await connection.query(`insert into estdetheme values (?,?)`, [
         idPI,
